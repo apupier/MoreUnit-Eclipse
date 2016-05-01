@@ -4,6 +4,9 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.internal.ui.refactoring.RefactoringMessages;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.ltk.internal.ui.refactoring.RefactoringUIMessages;
 import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEclipseEditor;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
@@ -44,18 +47,18 @@ public class RenameMethodTest extends JavaProjectSWTBotTestHelper
 	{
 		getShortcutStrategy().pressRenameShortcut();
 		getShortcutStrategy().pressRenameShortcut();
+		
+		//WORKAROUND due to an SWTBot bug when shell title is updated afterwards
+		bot.shells();
 
-		//bot.waitUntil(Conditions.shellIsActive("Rename Method"));
-		// TODO line above does not work under Fedora
-		bot.sleep(3000);
-		//System.out.println("Shell: "+bot.activeShell().getText());
+		bot.waitUntil(Conditions.shellIsActive(RefactoringMessages.RenameMethodWizard_defaultPageTitle));
 	}
 
 	protected void renameMethodAndWaitUntilFinished() 
 	{
-		bot.textWithLabel("New name:").setText("getNumberOne");
+		bot.textWithLabel(RefactoringUIMessages.RenameResourceWizard_name_field_label).setText("getNumberOne");
 		SWTBotShell renameDialog = bot.activeShell();
-		bot.button("OK").click();
+		bot.button(IDialogConstants.OK_LABEL).click();
 		bot.waitUntil(Conditions.shellCloses(renameDialog));
 	}
 }
